@@ -2,7 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+import cors from "cors";
+app.use(cors({
+  origin: "http://localhost:5173", // frontend URL
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 app.use(express.json());
 
 // ✅ Correct Gemini SDK import
