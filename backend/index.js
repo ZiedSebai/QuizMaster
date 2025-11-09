@@ -4,19 +4,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
 app.use(cors({
-  origin: "http://localhost:5173", // frontend URL
+  origin: ["http://localhost:5173","https://quiz-master.vercel.app"], 
   methods: ["GET", "POST"],
   credentials: true
 }));
 app.use(express.json());
 
-// ✅ Correct Gemini SDK import
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-
-// ✅ Initialize Gemini client with API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// ✅ Create model instance
 const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
 // ✅ Test route to verify Gemini response
