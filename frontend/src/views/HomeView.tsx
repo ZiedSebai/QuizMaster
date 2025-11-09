@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Sparkles, Brain, Zap } from 'lucide-react';
+import { Sparkles, Brain, Zap, AlertCircle } from 'lucide-react';
 import { useQuiz } from '@/context/QuizContext';
-import { staticQuizData } from '@/data/quizData';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function HomeView() {
   const [inputTopic, setInputTopic] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { setTopic, setQuizData, resetQuiz } = useQuiz();
 
@@ -18,15 +18,33 @@ export function HomeView() {
     if (!inputTopic.trim()) return;
 
     setIsGenerating(true);
+    setError('');
     resetQuiz();
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('http://localhost:3000/api/quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ topic: inputTopic.trim() }),
+      });
 
-    setTopic(inputTopic);
-    setQuizData(staticQuizData);
-    setIsGenerating(false);
+      if (!response.ok) {
+        throw new Error('Failed to generate quiz');
+      }
 
-    navigate('/quiz');
+      const quizData = await response.json();
+
+      setTopic(inputTopic);
+      setQuizData(quizData);
+      navigate('/quiz');
+    } catch (err) {
+      setError('Failed to generate quiz. Please make sure the backend server is running.');
+      console.error('Error generating quiz:', err);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -90,6 +108,15 @@ export function HomeView() {
                   </span>
                 )}
               </Button>
+
+              {error && (
+                <Card className="border-2 border-red-300 bg-red-50 dark:bg-red-950 dark:border-red-700 animate-in slide-in-from-top-2 duration-300">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+                    <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                  </CardContent>
+                </Card>
+              )}
             </CardContent>
           </Card>
 
