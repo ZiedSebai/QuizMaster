@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-import cors from "cors";
+const cors = require("cors");
 app.use(cors({
   origin: "http://localhost:5173", // frontend URL
   methods: ["GET", "POST"],
@@ -34,9 +34,18 @@ app.get('/api/test', async (req, res) => {
 // ✅ Quiz generation route
 app.post('/api/quiz', async (req, res) => {
     const topic = req.body.topic;
-  const prompt = `Create a 5-question multiple-choice quiz about ${topic}.
-    Return JSON format: [{"question": "...", "options": ["A", "B", "C", "D"], "correctAnswer": "A"}]`;
-
+  const prompt = `
+    Create a 5-question multiple-choice quiz about ${topic}.
+    Each question must have this JSON format exactly:
+    [
+    {
+        "question": "string",
+        "options": ["string", "string", "string", "string"],
+        "correctAnswer": "must be one of the option texts exactly"
+    }
+    ]
+    Return only JSON, no letters (A, B, C...).
+    `;
   try {
     const result = await model.generateContent(prompt);
     const response = await result.response;
