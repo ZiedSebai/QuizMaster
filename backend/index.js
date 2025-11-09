@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
 app.use(cors({
-  origin: ["http://localhost:5173","https://quiz-master.vercel.app"], 
+  origin: ["http://localhost:5173","https://quiz-master-app-nine.vercel.app"], 
   methods: ["GET", "POST"],
   credentials: true
 }));
