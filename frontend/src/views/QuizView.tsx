@@ -94,9 +94,8 @@ export function QuizView() {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               {currentQuestion.options.map((option, index) => {
-                const optionLetter = option.charAt(0);
-                const isSelected = selectedOption === optionLetter;
-                const isCorrectOption = optionLetter === currentQuestion.correctAnswer;
+                const isSelected = selectedOption === option;
+                const isCorrectOption = option === currentQuestion.correctAnswer;
 
                 let cardClasses = 'border-2 transition-all duration-300 cursor-pointer hover:shadow-lg transform hover:scale-102';
 
@@ -118,7 +117,7 @@ export function QuizView() {
                   <Card
                     key={index}
                     className={cardClasses}
-                    onClick={() => handleOptionSelect(optionLetter)}
+                    onClick={() => handleOptionSelect(option)}
                   >
                     <CardContent className="p-4 flex items-center justify-between">
                       <span className="text-lg text-gray-800 dark:text-gray-200">
@@ -158,9 +157,7 @@ export function QuizView() {
                   <p className={`text-sm ${
                     isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'
                   }`}>
-                    {isCorrect
-                      ? 'Great job! You got it right.'
-                      : `The correct answer is ${currentQuestion.correctAnswer}.`}
+                    {isCorrect ? 'Great job! You got it right.' : `The correct answer is: ${currentQuestion.correctAnswer}`}
                   </p>
                 </div>
               </CardContent>
